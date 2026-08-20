@@ -1811,10 +1811,34 @@ function applyCustom(hex){
     aaChip('Primary text', contrast(hex, ink), (ink === '#ffffff' ? 'White' : 'Black') + ' text on ' + hex.toUpperCase()) +
     aaChip('CTA links', contrast(r.cta, '#ffffff'), 'CTA colour ' + r.cta.toUpperCase() + ' on white');
 }
+function clearCustom(){
+  var s = customPhone.style;
+  ['--primary','--primary-ink','--cta','--check','--outline','--dot','--new',
+   '--card-bg','--card-ink','--card-btn-bg','--card-btn-ink',
+   '--dplus-bg','--dplus-ink','--dplus-link',
+   '--banner2-bg','--banner2-ink','--badge-bg'].forEach(function(p){ s.removeProperty(p); });
+}
+/* on load / reset / brand switch the third phone is an exact mirror of the
+   After state (the suggested palette); deriving only starts once a colour
+   is picked. The ramp strip and AA report show the brand's real values. */
 function resetCustom(){
-  var hex = DEFAULT_PRIMARY[phones[0].getAttribute('data-brand')];
-  pickColor.value = hex;
-  applyCustom(hex);
+  var brand = phones[0].getAttribute('data-brand');
+  pickColor.value = DEFAULT_PRIMARY[brand];
+  clearCustom();
+  var shades = [];
+  PALETTES[brand].groups.forEach(function(g){
+    if (g.label.indexOf('Shades') === 0) shades = g.sw;
+  });
+  miniRamp.innerHTML = shades.map(function(sw){
+    return '<span style="background:' + sw[1] + '" title="' + sw[0] + ' ' + sw[1].toUpperCase() + '"></span>';
+  }).join('');
+  var a = BTN[brand].after;
+  document.getElementById('aaRow').innerHTML =
+    '<span class="aa-lbl">WCAG AA</span>' +
+    aaChip('Primary text', contrast(a.primary.bg, a.primary.ink),
+      (a.primary.ink === '#FFFFFF' ? 'White' : 'Black') + ' text on ' + a.primary.bg.toUpperCase()) +
+    aaChip('CTA links', contrast(a.text.ink, '#ffffff'),
+      'CTA colour ' + a.text.ink.toUpperCase() + ' on white');
 }
 pickColor.addEventListener('input', function(){ applyCustom(pickColor.value); });
 document.getElementById('pickReset').addEventListener('click', resetCustom);
