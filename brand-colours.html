@@ -258,6 +258,9 @@ body{
 .phone[data-brand="km"]{
   --font:'Jost',sans-serif;
   --w-body:400; --w-bold:600;
+  /* KM keeps its lighter sentence-case buttons in both states;
+     only the colours change in the After */
+  --w-btn:400; --case-1:none; --case-2:none;
   --dplus-bg:linear-gradient(90deg,#000 36%,#161616 100%); --dplus-ink:#fff; --dplus-link:#fff;
 }
 .phone[data-brand="km"][data-state="after"]{
@@ -269,7 +272,7 @@ body{
 }
 .phone[data-brand="km"][data-state="before"]{
   --primary:#000; --primary-ink:#fff; --cta:#000; --check:#000; --outline:#b5b5b5;
-  --w-btn:400; --case-1:none; --case-2:none; --link-deco:underline; --link-w:var(--w-body);
+  --link-deco:underline; --link-w:var(--w-body);
   --banner1-bg:#000; --banner1-ink:#fff; --banner2-bg:#000; --banner2-ink:#fff;
   --badge-bg:#f2f2f2; --badge-ink:#000; --price:#d33f3f;
   --card-bg:#000; --card-ink:#fff; --card-btn-bg:#fff; --card-btn-ink:#000;
@@ -1578,7 +1581,7 @@ var BTN_TXT = {
   plt: {before:{w:400,c1:'uppercase',c2:'uppercase',u:true,tw:400}, after:{w:600,c1:'uppercase',c2:'none',u:false,tw:600}},
   bh:  {before:{w:700,c1:'uppercase',c2:'uppercase',u:true,tw:400}, after:{w:600,c1:'uppercase',c2:'none',u:false,tw:600}},
   bm:  {before:{w:700,c1:'uppercase',c2:'uppercase',u:true,tw:400}, after:{w:600,c1:'uppercase',c2:'none',u:false,tw:600}},
-  km:  {before:{w:400,c1:'none',c2:'none',u:true,tw:400},           after:{w:600,c1:'uppercase',c2:'none',u:false,tw:600}}
+  km:  {before:{w:400,c1:'none',c2:'none',u:true,tw:400},           after:{w:400,c1:'none',c2:'none',u:false,tw:600}}
 };
 var BTN = (function(){
   var debAfter = {
@@ -1817,7 +1820,7 @@ function applyCustom(hex){
      primary (with the auto-flipped ink) and the derived CTA links on white */
   document.getElementById('aaRow').innerHTML =
     '<span class="aa-lbl">WCAG AA</span>' +
-    aaChip('Primary text', contrast(hex, ink), (ink === '#ffffff' ? 'White' : 'Black') + ' text on ' + hex.toUpperCase()) +
+    aaChip('Primary button', contrast(hex, ink), 'Button text (' + (ink === '#ffffff' ? 'white' : 'black') + ') on ' + hex.toUpperCase()) +
     aaChip('CTA links', contrast(r.cta, '#ffffff'), 'CTA colour ' + r.cta.toUpperCase() + ' on white');
 }
 function clearCustom(){
@@ -1844,8 +1847,8 @@ function resetCustom(){
   var a = BTN[brand].after;
   document.getElementById('aaRow').innerHTML =
     '<span class="aa-lbl">WCAG AA</span>' +
-    aaChip('Primary text', contrast(a.primary.bg, a.primary.ink),
-      (a.primary.ink === '#FFFFFF' ? 'White' : 'Black') + ' text on ' + a.primary.bg.toUpperCase()) +
+    aaChip('Primary button', contrast(a.primary.bg, a.primary.ink),
+      'Button text (' + (a.primary.ink === '#FFFFFF' ? 'white' : 'black') + ') on ' + a.primary.bg.toUpperCase()) +
     aaChip('CTA links', contrast(a.text.ink, '#ffffff'),
       'CTA colour ' + a.text.ink.toUpperCase() + ' on white');
 }
