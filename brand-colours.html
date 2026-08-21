@@ -265,6 +265,7 @@ body{
 }
 .phone[data-brand="km"][data-state="after"]{
   --primary:#db4e11; --primary-ink:#fff; --cta:#8e330b; --check:#8e330b; --outline:#832f0a;
+  --link-w:500; /* KM Text Only CTA sits at medium, not semibold */
   --banner1-bg:#fafafa; --banner1-ink:#000; --banner2-bg:#000; --banner2-ink:#fff;
   --badge-bg:#fff2f2; --badge-ink:#d33f3f; --price:#d33f3f;
   --card-bg:#db4e11; --card-ink:#fff; --card-btn-bg:#fff; --card-btn-ink:#000;
@@ -1581,7 +1582,7 @@ var BTN_TXT = {
   plt: {before:{w:400,c1:'uppercase',c2:'uppercase',u:true,tw:400}, after:{w:600,c1:'uppercase',c2:'none',u:false,tw:600}},
   bh:  {before:{w:700,c1:'uppercase',c2:'uppercase',u:true,tw:400}, after:{w:600,c1:'uppercase',c2:'none',u:false,tw:600}},
   bm:  {before:{w:700,c1:'uppercase',c2:'uppercase',u:true,tw:400}, after:{w:600,c1:'uppercase',c2:'none',u:false,tw:600}},
-  km:  {before:{w:400,c1:'none',c2:'none',u:true,tw:400},           after:{w:400,c1:'none',c2:'none',u:false,tw:600}}
+  km:  {before:{w:400,c1:'none',c2:'none',u:true,tw:400},           after:{w:400,c1:'none',c2:'none',u:false,tw:500}}
 };
 var BTN = (function(){
   var debAfter = {
