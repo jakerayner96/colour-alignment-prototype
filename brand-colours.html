@@ -90,17 +90,23 @@ body{
 /* ================= before / after / pick-a-colour side by side ================= */
 .compare{display:flex;gap:48px;align-items:flex-start;}
 .ph-col{width:390px;display:flex;flex-direction:column;gap:14px;}
-/* equal-height column headers so the three phones align */
-.ph-head{height:82px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;}
+/* column headers above the phones */
+.ph-head{display:flex;flex-direction:column;justify-content:flex-end;gap:8px;}
 /* WCAG AA contrast check for the picked colour */
 .aa-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
 .aa-lbl{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8e8e93;}
 .aa-chip{font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;line-height:1.5;white-space:nowrap;}
 .aa-chip.pass{background:#eaf6ea;color:#1e7a34;}
 .aa-chip.fail{background:#fff2f2;color:#d33f3f;}
-.pick-row{display:flex;align-items:center;gap:10px;}
-.pick-row .side-label{flex:1;}
-.pick-row input[type="color"]{width:36px;height:26px;border:1px solid #c9c9cc;border-radius:6px;padding:1px;background:#fff;cursor:pointer;}
+/* floating colour picker: fixed to the viewport so the colour can be
+   changed from anywhere on the page without scrolling back up */
+.fab{position:fixed;right:24px;bottom:24px;z-index:200;width:300px;background:#fff;border-radius:16px;box-shadow:0 10px 34px rgba(0,0,0,.28);padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.fab-row{display:flex;align-items:center;gap:12px;}
+.fab input[type="color"]{width:46px;height:46px;flex-shrink:0;border:1px solid #c9c9cc;border-radius:50%;padding:2px;background:#fff;cursor:pointer;}
+.fab input[type="color"]::-webkit-color-swatch-wrapper{padding:2px;}
+.fab input[type="color"]::-webkit-color-swatch{border-radius:50%;border:none;}
+.fab-copy{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+.fab-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#3a3a3c;}
 .pick-reset{font-family:inherit;font-size:11px;font-weight:500;padding:4px 10px;border-radius:99px;border:1px solid #c9c9cc;background:#fff;color:#1c1c1e;cursor:pointer;}
 .pick-reset:hover{border-color:#8e8e93;}
 /* shades derived live from the picked primary */
@@ -595,17 +601,20 @@ body{
 <div class="compare">
   <div class="ph-col"><div class="ph-head"><p class="side-label">Before</p></div></div>
   <div class="ph-col"><div class="ph-head"><p class="side-label">After</p></div></div>
-  <div class="ph-col">
-    <div class="ph-head">
-      <div class="pick-row">
-        <p class="side-label">Pick a colour</p>
-        <input type="color" id="pickColor" value="#7be7d8" title="Pick a new primary colour">
-        <button class="pick-reset" id="pickReset">Reset</button>
-      </div>
+  <div class="ph-col"><div class="ph-head"><p class="side-label">Pick a colour</p></div></div>
+</div>
+
+<!-- floating colour picker -->
+<div class="fab">
+  <div class="fab-row">
+    <input type="color" id="pickColor" value="#7be7d8" title="Pick a new primary colour">
+    <div class="fab-copy">
+      <span class="fab-title">Pick a colour</span>
       <div class="mini-ramp" id="miniRamp" title="Shades derived from the picked primary"></div>
-      <div class="aa-row" id="aaRow"></div>
     </div>
+    <button class="pick-reset" id="pickReset">Reset</button>
   </div>
+  <div class="aa-row" id="aaRow"></div>
 </div>
 
 <!-- full brand palette: Debenhams Design System, COLOURS page -->
