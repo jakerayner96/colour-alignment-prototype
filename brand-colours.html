@@ -46,6 +46,26 @@ body{
 /* ================= demo controls (prototype scaffolding) ================= */
 /* brand switcher: app icon tiles, centred at the top */
 .brand-tiles{display:flex;gap:22px;align-items:flex-start;justify-content:center;flex-wrap:wrap;}
+.inspect-hint{font-size:12px;font-weight:500;color:#6d6d70;text-align:center;margin-top:-16px;}
+
+/* ================= click-to-inspect (prototype scaffolding) =================
+   click any element to read its colours, font, size, weight and contrast */
+#inspectBox{position:fixed;z-index:400;width:300px;background:#fff;border-radius:12px;box-shadow:0 6px 28px rgba(0,0,0,.3);padding:14px 16px;font-family:'Geologica',sans-serif;color:#1c1c1e;display:none;}
+#inspectBox .ib-head{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;}
+#inspectBox .ib-el{font-size:14px;font-weight:600;color:#3b3bc4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;}
+#inspectBox .ib-size{font-size:13px;color:#1c1c1e;white-space:nowrap;}
+#inspectBox .ib-close{border:none;background:none;font-size:15px;line-height:1;color:#8e8e93;cursor:pointer;padding:0 0 0 6px;}
+#inspectBox .ib-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:3px 0;font-size:12.5px;}
+#inspectBox .ib-lbl{color:#6d6d70;flex-shrink:0;}
+#inspectBox .ib-val{display:flex;align-items:center;gap:6px;text-align:right;font-weight:500;min-width:0;}
+#inspectBox .ib-val span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#inspectBox .sw{width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.2);flex-shrink:0;display:inline-block;}
+#inspectBox .ib-sect{font-size:10px;font-weight:700;letter-spacing:.07em;color:#8e8e93;margin:10px 0 4px;display:flex;align-items:center;gap:8px;}
+#inspectBox .ib-sect::after{content:"";flex:1;height:1px;background:#e5e5ea;}
+#inspectBox .aa-badge{font-size:12px;font-weight:600;padding:1px 7px;border-radius:4px;border:1px solid rgba(0,0,0,.15);}
+#inspectBox .aa-pass{color:#1e7a34;}
+#inspectBox .aa-fail{color:#d33f3f;}
+#inspectHl{position:fixed;z-index:390;pointer-events:none;background:rgba(96,169,235,.32);outline:1.5px dashed #7b61c4;display:none;}
 .b-tile{width:76px;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;gap:9px;align-items:center;padding:0;}
 .b-tile .tile{width:62px;height:62px;border-radius:14px;background:#fff;border:1px solid rgba(0,0,0,.08);box-shadow:0 1px 3px rgba(0,0,0,.08);display:block;overflow:hidden;}
 .b-tile .tile img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -74,10 +94,8 @@ body{
 .pal-sw.ink > span{color:#fff;}
 /* buttons board: full design-system matrix, scrolls sideways */
 .btn-scroll{overflow-x:auto;padding-bottom:4px;}
-.btn-matrix{display:grid;grid-template-columns:repeat(7,max-content);gap:16px 24px;align-items:start;justify-items:start;}
+.btn-matrix{display:grid;grid-template-columns:repeat(7,max-content);gap:16px 24px;align-items:center;justify-items:start;}
 .mx-h{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8e8e93;white-space:nowrap;}
-.mx-cell{display:flex;flex-direction:column;gap:6px;align-items:flex-start;}
-.mx-hex{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10px;color:#6d6d70;display:flex;gap:12px;white-space:nowrap;}
 .bs{width:358px;height:50px;border:1px solid transparent;display:flex;gap:8px;align-items:center;justify-content:center;font-size:16px;line-height:24px;white-space:nowrap;overflow:hidden;}
 .bs.t3{width:auto;height:40px;font-size:14px;padding:0 16px;}
 .bs.xs{width:auto;height:31px;font-size:12px;padding:0 10px;}
@@ -710,6 +728,7 @@ body{
     <button data-brand="plt" class="b-tile"><span class="tile"><img src="brand-assets/app-icons/plt.jpg" alt=""></span><span class="t-name">PLT</span></button>
     <button data-brand="km" class="b-tile"><span class="tile"><img src="brand-assets/app-icons/km.jpg" alt=""></span><span class="t-name">Karen Millen</span></button>
 </div>
+<p class="inspect-hint">Click anything on the page to check its colour, font, size, weight and contrast</p>
 
 <!-- all five screens side by side, final styling only -->
 <div class="stage" id="stage"></div>
@@ -2394,14 +2413,9 @@ function renderButtons(){
   var GREY3 = '#B5B5B5', SOFTBLACK = '#242424';
 
   function cell(cls, bg, ink, border, w, tc, content){
-    var hex = [];
-    if (bg && bg !== 'transparent') hex.push('fill ' + bg.toUpperCase());
-    if (border) hex.push('border ' + border.toUpperCase());
-    hex.push('text ' + ink.toUpperCase());
-    return '<div class="mx-cell"><div class="' + cls + '" style="background:' + bg + ';color:' + ink +
+    return '<div class="' + cls + '" style="background:' + bg + ';color:' + ink +
       ';border:1px solid ' + (border || 'transparent') + ';border-radius:' + radius +
-      ';font-weight:' + w + ';text-transform:' + (tc || 'none') + ';">' + content + '</div>' +
-      '<span class="mx-hex">' + hex.map(function(x){ return '<span>' + x + '</span>'; }).join('') + '</span></div>';
+      ';font-weight:' + w + ';text-transform:' + (tc || 'none') + ';">' + content + '</div>';
   }
   var empty = '<div></div>';
   var html = ['Default','Touch down','Disabled','Spinner','Added &middot; icon 24',
@@ -2512,6 +2526,105 @@ if (v){
 
 renderPalette();
 renderButtons();
+
+/* ============ click-to-inspect (prototype scaffolding) ============
+   click any element on the page to read its colours, font, size,
+   weight and WCAG contrast; the brand tiles keep their behaviour */
+var ibox = document.createElement('div'); ibox.id = 'inspectBox'; document.body.appendChild(ibox);
+var ihl = document.createElement('div'); ihl.id = 'inspectHl'; document.body.appendChild(ihl);
+
+function parseRGB(s){
+  var m = (s || '').match(/rgba?\(([\d.]+)[, ]+([\d.]+)[, ]+([\d.]+)(?:[,/ ]+([\d.]+))?\)/);
+  if (!m) return null;
+  return [parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), m[4] === undefined ? 1 : parseFloat(m[4])];
+}
+function toHex(rgb){
+  return '#' + [0,1,2].map(function(i){ var v = Math.round(rgb[i]); return ('0' + v.toString(16)).slice(-2); }).join('').toUpperCase();
+}
+/* walk up for the paint the element actually sits on, compositing alpha */
+function effectiveBg(el){
+  var node = el, stack = [];
+  while (node && node.nodeType === 1){
+    var c = parseRGB(getComputedStyle(node).backgroundColor);
+    if (c && c[3] > 0){ stack.push(c); if (c[3] >= 1) break; }
+    node = node.parentElement;
+  }
+  if (!stack.length) return [255,255,255];
+  var out = stack[stack.length-1].slice(0,3);
+  for (var i = stack.length-2; i >= 0; i--){
+    var a = stack[i][3];
+    out = [stack[i][0]*a + out[0]*(1-a), stack[i][1]*a + out[1]*(1-a), stack[i][2]*a + out[2]*(1-a)];
+  }
+  return out;
+}
+function relLum(rgb){
+  var v = [0,1,2].map(function(i){ var c = rgb[i]/255; return c <= 0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); });
+  return 0.2126*v[0] + 0.7152*v[1] + 0.0722*v[2];
+}
+function contrastRatio(a, b){
+  var l1 = relLum(a), l2 = relLum(b);
+  return (Math.max(l1,l2) + 0.05) / (Math.min(l1,l2) + 0.05);
+}
+function swatch(hex){ return '<span class="sw" style="background:' + hex + ';"></span>'; }
+function ibRow(lbl, val){ return '<div class="ib-row"><span class="ib-lbl">' + lbl + '</span><span class="ib-val">' + val + '</span></div>'; }
+
+function hideInspect(){ ibox.style.display = 'none'; ihl.style.display = 'none'; }
+
+function inspect(el, x, y){
+  var cs = getComputedStyle(el);
+  var r = el.getBoundingClientRect();
+  var ink = parseRGB(cs.color) || [0,0,0,1];
+  var bg = effectiveBg(el);
+  var ownBg = parseRGB(cs.backgroundColor);
+  var fam = (cs.fontFamily || '').split(',')[0].replace(/["']/g, '');
+  var size = parseFloat(cs.fontSize);
+  var weight = cs.fontWeight;
+  var label = el.tagName.toLowerCase() + (el.classList.length ? '.' + el.classList[0] : '');
+  var border = (cs.borderTopStyle !== 'none' && parseFloat(cs.borderTopWidth) > 0) ? parseRGB(cs.borderTopColor) : null;
+  if (border && border[3] === 0) border = null;
+  var directText = false;
+  for (var n = el.firstChild; n; n = n.nextSibling){
+    if (n.nodeType === 3 && /\S/.test(n.nodeValue)){ directText = true; break; }
+  }
+
+  var html = '<div class="ib-head"><span class="ib-el">' + label + '</span>' +
+    '<span class="ib-size">' + Math.round(r.width) + ' &times; ' + Math.round(r.height) + '</span>' +
+    '<button class="ib-close" id="ibClose">&#10005;</button></div>';
+  html += ibRow('Colour', swatch(toHex(ink)) + '<span>' + toHex(ink) + '</span>');
+  html += ibRow('Font', '<span>' + size + 'px ' + fam + '</span>');
+  html += ibRow('Weight', '<span>' + weight + (cs.textTransform === 'uppercase' ? ' &middot; uppercase' : '') + '</span>');
+  html += ibRow('Background', swatch(toHex(bg)) + '<span>' + toHex(bg) + ((ownBg && ownBg[3] > 0) ? '' : ' (behind)') + '</span>');
+  if (border) html += ibRow('Border', swatch(toHex(border)) + '<span>' + toHex(border) + '</span>');
+  if (directText){
+    var ratio = contrastRatio(ink, bg);
+    var big = size >= 24 || (size >= 18.5 && parseInt(weight, 10) >= 700);
+    var pass = ratio >= (big ? 3 : 4.5);
+    html += '<div class="ib-sect">ACCESSIBILITY</div>';
+    html += ibRow('Contrast', '<span class="aa-badge" style="background:' + toHex(bg) + ';color:' + toHex(ink) + ';">Aa</span>' +
+      '<span>' + (Math.round(ratio * 100) / 100) + '</span>' +
+      '<span class="' + (pass ? 'aa-pass' : 'aa-fail') + '">' + (pass ? '&#10003; AA' : '&#10007; AA') + (big ? ' (large)' : '') + '</span>');
+  }
+  ibox.innerHTML = html;
+  ibox.style.display = 'block';
+  var bw = 300, bh = ibox.offsetHeight;
+  ibox.style.left = Math.max(8, Math.min(x + 14, window.innerWidth - bw - 8)) + 'px';
+  ibox.style.top = Math.max(8, Math.min(y + 14, window.innerHeight - bh - 8)) + 'px';
+  document.getElementById('ibClose').addEventListener('click', function(ev){ ev.stopPropagation(); hideInspect(); });
+  ihl.style.display = 'block';
+  ihl.style.left = r.left + 'px'; ihl.style.top = r.top + 'px';
+  ihl.style.width = r.width + 'px'; ihl.style.height = r.height + 'px';
+}
+
+document.addEventListener('click', function(e){
+  var t = e.target;
+  if (!(t instanceof Element)) return;
+  if (t.closest('#inspectBox')) return;
+  if (t.closest('#brandRow')){ hideInspect(); return; }
+  if (t === document.body || t === document.documentElement){ hideInspect(); return; }
+  inspect(t, e.clientX, e.clientY);
+}, true);
+window.addEventListener('scroll', hideInspect, true);
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hideInspect(); });
 </script>
 
 </body>

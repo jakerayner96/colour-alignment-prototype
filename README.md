@@ -11,7 +11,14 @@ load wants a network connection. Everything else is local under
 `brand-assets/`, which must travel with the HTML file.
 
 The page is: App Store icon brand switcher → the five screens side by side →
-full brand palette → golden truth buttons.
+full brand palette → golden truth buttons (the full design-system state
+matrix: Default, Touch down, Disabled, Spinner and the Added / Checkout
+Securely icon states for every CTA type).
+
+**Click-to-inspect:** click any element on the page and a floating card
+reads out its colour, font, size, weight, background (composited through
+transparent parents), border and WCAG contrast with an AA pass/fail badge.
+Esc or ✕ closes it; the brand tiles keep their normal behaviour.
 
 ## Signed-off decisions (KM review, Aug 2026)
 
