@@ -222,6 +222,7 @@ body{
   --primary:#d24508; --primary-ink:#fff; --cta:#892d05; --check:#892d05;
   --outline:#000; --vto:#000;
   --tickc:#000; --tert:#fae9e1; /* KM keeps the filled tick circles black */
+  --paypal:#eeeeee; /* KM PayPal buttons on light grey, not yellow */
   --link-w:500; /* KM Text Only CTA sits at medium, not semibold */
   --banner1-bg:#fafafa; --banner1-ink:#000; --banner2-bg:#000; --banner2-ink:#fff;
   --badge-bg:#fff2f2; --badge-ink:#d33f3f; --price:#d33f3f;
@@ -539,9 +540,9 @@ body{
 .or-row .l{flex:1;height:1px;background:var(--grey-2);}
 .or-row span{font-size:16px;font-weight:var(--w-body);color:var(--grey-5);}
 .wallet{width:100%;height:50px;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:8px;border:none;}
-.wallet.paypal{background:#ffc439;}
+.wallet.paypal{background:var(--paypal);}
 .wallet.paypal img{height:20px;display:block;}
-.wallet.paylater{background:#ffc439;font-size:15px;font-weight:500;color:#2c2e2f;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;}
+.wallet.paylater{background:var(--paypal);font-size:15px;font-weight:500;color:#2c2e2f;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;}
 .wallet.paylater img{height:20px;display:block;}
 .wallet.apple{background:#000;}
 .wallet.apple img{height:22px;display:block;}
