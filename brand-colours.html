@@ -74,8 +74,10 @@ body{
 .pal-sw.ink > span{color:#fff;}
 /* buttons board: full design-system matrix, scrolls sideways */
 .btn-scroll{overflow-x:auto;padding-bottom:4px;}
-.btn-matrix{display:grid;grid-template-columns:repeat(7,max-content);gap:16px 24px;align-items:center;justify-items:start;}
+.btn-matrix{display:grid;grid-template-columns:repeat(7,max-content);gap:16px 24px;align-items:start;justify-items:start;}
 .mx-h{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8e8e93;white-space:nowrap;}
+.mx-cell{display:flex;flex-direction:column;gap:6px;align-items:flex-start;}
+.mx-hex{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10px;color:#6d6d70;display:flex;gap:12px;white-space:nowrap;}
 .bs{width:358px;height:50px;border:1px solid transparent;display:flex;gap:8px;align-items:center;justify-content:center;font-size:16px;line-height:24px;white-space:nowrap;overflow:hidden;}
 .bs.t3{width:auto;height:40px;font-size:14px;padding:0 16px;}
 .bs.xs{width:auto;height:31px;font-size:12px;padding:0 10px;}
@@ -2392,9 +2394,14 @@ function renderButtons(){
   var GREY3 = '#B5B5B5', SOFTBLACK = '#242424';
 
   function cell(cls, bg, ink, border, w, tc, content){
-    return '<div class="' + cls + '" style="background:' + bg + ';color:' + ink +
+    var hex = [];
+    if (bg && bg !== 'transparent') hex.push('fill ' + bg.toUpperCase());
+    if (border) hex.push('border ' + border.toUpperCase());
+    hex.push('text ' + ink.toUpperCase());
+    return '<div class="mx-cell"><div class="' + cls + '" style="background:' + bg + ';color:' + ink +
       ';border:1px solid ' + (border || 'transparent') + ';border-radius:' + radius +
-      ';font-weight:' + w + ';text-transform:' + (tc || 'none') + ';">' + content + '</div>';
+      ';font-weight:' + w + ';text-transform:' + (tc || 'none') + ';">' + content + '</div>' +
+      '<span class="mx-hex">' + hex.map(function(x){ return '<span>' + x + '</span>'; }).join('') + '</span></div>';
   }
   var empty = '<div></div>';
   var html = ['Default','Touch down','Disabled','Spinner','Added &middot; icon 24',
