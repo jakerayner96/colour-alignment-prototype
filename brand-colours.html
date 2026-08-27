@@ -72,11 +72,18 @@ body{
 }
 .pal-sw .hx{display:block;font-weight:400;opacity:.85;margin-top:1px;}
 .pal-sw.ink > span{color:#fff;}
-.btn-grid{display:flex;flex-direction:column;gap:16px;align-items:flex-start;width:358px;}
-.bs{width:358px;height:50px;border:1px solid transparent;display:flex;align-items:center;justify-content:center;font-size:16px;line-height:24px;white-space:nowrap;overflow:hidden;}
+/* buttons board: full design-system matrix, scrolls sideways */
+.btn-scroll{overflow-x:auto;padding-bottom:4px;}
+.btn-matrix{display:grid;grid-template-columns:repeat(7,max-content);gap:16px 24px;align-items:center;justify-items:start;}
+.mx-h{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8e8e93;white-space:nowrap;}
+.bs{width:358px;height:50px;border:1px solid transparent;display:flex;gap:8px;align-items:center;justify-content:center;font-size:16px;line-height:24px;white-space:nowrap;overflow:hidden;}
 .bs.t3{width:auto;height:40px;font-size:14px;padding:0 16px;}
 .bs.xs{width:auto;height:31px;font-size:12px;padding:0 10px;}
 .bs.txt{width:auto;height:34px;font-size:14px;padding:0 4px;}
+.bs svg{display:block;flex-shrink:0;}
+.bs .spn{width:20px;height:20px;border-radius:50%;border:2px solid currentColor;border-top-color:transparent;animation:bspin .9s linear infinite;}
+.bs.t3 .spn,.bs.xs .spn{width:16px;height:16px;}
+@keyframes bspin{to{transform:rotate(360deg)}}
 
 /* ================= stage: all five screens side by side ================= */
 /* the master phone is a hidden template; JS clones it into one column
@@ -712,11 +719,11 @@ body{
   <p class="board-note" id="paletteNote"></p>
 </div>
 
-<!-- golden truth buttons, bound to the palette tokens -->
+<!-- golden truth buttons, bound to the palette tokens: full state matrix -->
 <div class="board">
   <div class="board-head"><span class="board-title">Buttons</span><span class="board-brand" id="btnBrand"></span></div>
-  <div class="btn-grid" id="btnGrid"></div>
-  <p class="board-note" id="btnNote">Primary, Secondary, Tertiary, Tertiary XS and Text Only CTAs at component size from the design system (358&times;50, 40 and 31 high), bound to the palette tokens. Karen Millen secondaries carry a black outline and boohoo runs black and white, per the Aug 2026 review. The same components are placed in the screens above.</p>
+  <div class="btn-scroll"><div class="btn-matrix" id="btnGrid"></div></div>
+  <p class="board-note" id="btnNote">The full button set from the design system (12681:158518): Buy It Now, Primary, Secondary, Tertiary, Tertiary XS and Text Only CTAs in Default, Touch down, Disabled, Spinner and icon states (Added, Checkout Securely at 20 and 16), at component size and bound to the palette slots &mdash; pressed fills sit one ramp step darker (Primary &rarr; Dark 1, Tertiary &rarr; Neutral Pressed, Secondary &rarr; Light 4), disabled fills drop to Neutral / Grey 1 with Grey 3 ink, Text Only presses to Primary Dark and disables to Dark 2. Karen Millen secondaries carry a black outline and boohoo runs black and white, per the Aug 2026 review. Scroll sideways for the icon states.</p>
 </div>
 
 <!-- ================= phone ================= -->
@@ -2328,46 +2335,117 @@ var BTN_TXT = {
   bm:  {w:600,c1:'uppercase',c2:'none',tw:600},
   km:  {w:400,c1:'none',c2:'none',tw:500}
 };
-var BTN = {
-  deb: {primary:{bg:'#7BE7D8',ink:'#000000'},secondary:{border:'#70BEB3'},tertiary:{bg:'#E8F4F2'},text:{ink:'#00787D'}},
-  plt: {primary:{bg:'#550503',ink:'#FFFFFF'},secondary:{border:'#360502'},tertiary:{bg:'#F3EAE8'},text:{ink:'#550503'}},
-  bh:  {primary:{bg:'#000000',ink:'#FFFFFF'},secondary:{border:'#000000'},tertiary:{bg:'#F2F2F2'},text:{ink:'#000000'}},
-  bm:  {primary:{bg:'#000000',ink:'#FFFFFF'},secondary:{border:'#000000'},tertiary:{bg:'#F2F2F2'},text:{ink:'#000000'}},
-  km:  {primary:{bg:'#D24508',ink:'#FFFFFF'},secondary:{border:'#000000'},tertiary:{bg:'#FAE9E1'},text:{ink:'#892D05'}}
+/* full state spec per brand, every value a palette slot.
+   buy / primary / text: [fill or ink] per state. secondary: white fill,
+   border per state, Light 4 pressed fill. tertiary / xs: Neutral fill,
+   Neutral Pressed on touch, Grey 1 + Grey 3 disabled. */
+var BTNS = {
+  deb: {
+    buy:{def:['#00787D','#FFFFFF'],prs:['#00565A','#FFFFFF'],dis:['#70BEB3','#FFFFFF']},
+    primary:{def:['#7BE7D8','#000000'],prs:['#76DECF','#000000'],dis:['#E8F4F2','#B5B5B5']},
+    secondary:{border:'#70BEB3',prsFill:'#E6FFFC',disBorder:'#E8F4F2'},
+    tertiary:{def:'#E8F4F2',prs:'#D7EBE8'},
+    text:{def:'#00787D',prs:'#00565A',dis:'#70BEB3'}
+  },
+  bh: {
+    buy:{def:['#000000','#FFFFFF'],prs:['#000000','#FFFFFF'],dis:['#000000','#FFFFFF']},
+    primary:{def:['#000000','#FFFFFF'],prs:['#000000','#FFFFFF'],dis:['#F2F2F2','#B5B5B5']},
+    secondary:{border:'#000000',prsFill:'#D6D6D6',disBorder:'#F2F2F2'},
+    tertiary:{def:'#F2F2F2',prs:'#E7E7E7'},
+    text:{def:'#000000',prs:'#000000',dis:'#000000'}
+  },
+  bm: {
+    buy:{def:['#000000','#FFFFFF'],prs:['#000000','#FFFFFF'],dis:['#000000','#FFFFFF']},
+    primary:{def:['#000000','#FFFFFF'],prs:['#000000','#FFFFFF'],dis:['#F2F2F2','#B5B5B5']},
+    secondary:{border:'#000000',prsFill:'#D6D6D6',disBorder:'#F2F2F2'},
+    tertiary:{def:'#F2F2F2',prs:'#E7E7E7'},
+    text:{def:'#000000',prs:'#000000',dis:'#000000'}
+  },
+  plt: {
+    buy:{def:['#550503','#FFFFFF'],prs:['#450603','#FFFFFF'],dis:['#FAF5E7','#B5B5B5']},
+    primary:{def:['#550503','#FFFFFF'],prs:['#450603','#FFFFFF'],dis:['#FAF5E7','#B5B5B5']},
+    secondary:{border:'#360502',prsFill:'#FCF0EE',disBorder:'#F3EAE8'},
+    tertiary:{def:'#F3EAE8',prs:'#FCF0EE'},
+    text:{def:'#550503',prs:'#1E0301',dis:'#360502'}
+  },
+  km: {
+    buy:{def:['#892D05','#FFFFFF'],prs:['#7E2905','#FFFFFF'],dis:['#7E2905','#FFFFFF']},
+    primary:{def:['#D24508','#FFFFFF'],prs:['#A83706','#FFFFFF'],dis:['#FAE9E1','#6B6B6B']},
+    secondary:{border:'#000000',prsFill:'#F4D1C1',disBorder:'#FAE9E1'},
+    tertiary:{def:'#FAE9E1',prs:'#F6DACE'},
+    text:{def:'#892D05',prs:'#2A0E02',dis:'#7E2905'}
+  }
 };
 
-var BTN_ROWS = [
-  {type:'primary', label:'Primary CTA', cls:'bs'},
-  {type:'secondary', label:'Secondary CTA', cls:'bs'},
-  {type:'tertiary', label:'Tertiary CTA', cls:'bs t3'},
-  {type:'xs', label:'XS CTA', cls:'bs xs'},
-  {type:'text', label:'Text Only CTA', cls:'bs txt'}
-];
-
-function btnStyle(spec, type){
-  var s = {bg:'transparent', color:'#000000', border:'1px solid transparent'};
-  if (type === 'primary'){ s.bg = spec.primary.bg; s.color = spec.primary.ink; }
-  else if (type === 'secondary'){ s.bg = '#FFFFFF'; s.border = '1px solid ' + spec.secondary.border; }
-  else if (type === 'tertiary'){ s.bg = spec.tertiary.bg; }
-  else if (type === 'xs'){ s.bg = '#F2F2F2'; }
-  else { s.color = spec.text.ink; }
-  return s;
+var TICK = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+function LOCK(sz){
+  return '<svg width="' + sz + '" height="' + sz + '" viewBox="0 0 16 16" fill="none"><path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" stroke="currentColor" stroke-width="1.3"/><rect x="3.2" y="7" width="9.6" height="6.6" rx="1" fill="currentColor"/></svg>';
 }
 
 function renderButtons(){
   var brand = master.getAttribute('data-brand');
   var radius = brand === 'plt' ? '0' : '4px';
-  var spec = BTN[brand];
+  var spec = BTNS[brand];
   var txt = BTN_TXT[brand];
   var grid = document.getElementById('btnGrid');
   grid.style.fontFamily = BTN_FONT[brand];
-  var html = '';
-  BTN_ROWS.forEach(function(row){
-    var s = btnStyle(spec, row.type);
-    var w = (row.type === 'tertiary' || row.type === 'xs') ? 400 : row.type === 'text' ? txt.tw : txt.w;
-    var tc = row.type === 'primary' ? txt.c1 : row.type === 'secondary' ? txt.c2 : 'none';
-    html += '<div class="' + row.cls + '" style="background:' + s.bg + ';color:' + s.color + ';border:' + s.border + ';border-radius:' + radius + ';font-weight:' + w + ';text-transform:' + tc + ';">' + row.label + '</div>';
+  var GREY3 = '#B5B5B5', SOFTBLACK = '#242424';
+
+  function cell(cls, bg, ink, border, w, tc, content){
+    return '<div class="' + cls + '" style="background:' + bg + ';color:' + ink +
+      ';border:1px solid ' + (border || 'transparent') + ';border-radius:' + radius +
+      ';font-weight:' + w + ';text-transform:' + (tc || 'none') + ';">' + content + '</div>';
+  }
+  var empty = '<div></div>';
+  var html = ['Default','Touch down','Disabled','Spinner','Added &middot; icon 24',
+              'Checkout Securely &middot; icon 20','Checkout Securely &middot; icon 16']
+    .map(function(hd){ return '<span class="mx-h">' + hd + '</span>'; }).join('');
+
+  /* Buy It Now + Primary rows: fill/ink per state, uppercase per brand */
+  [['buy','Buy It Now CTA'],['primary','Primary CTA']].forEach(function(r){
+    var s = spec[r[0]], lbl = r[1];
+    html += cell('bs', s.def[0], s.def[1], null, txt.w, txt.c1, lbl);
+    html += cell('bs', s.prs[0], s.prs[1], null, txt.w, txt.c1, lbl);
+    html += cell('bs', s.dis[0], s.dis[1], null, txt.w, txt.c1, lbl);
+    html += cell('bs', s.def[0], s.def[1], null, txt.w, txt.c1, '<span class="spn"></span>');
+    html += cell('bs', s.def[0], s.def[1], null, txt.w, txt.c1, TICK + 'Added');
+    html += cell('bs', s.def[0], s.def[1], null, txt.w, txt.c1, LOCK(20) + 'Checkout Securely');
+    html += cell('bs', s.def[0], s.def[1], null, txt.w, txt.c1, LOCK(16) + 'Checkout Securely');
   });
+
+  /* Secondary: white fill with the brand outline, Light 4 pressed fill */
+  var sec = spec.secondary, sl = 'Secondary CTA';
+  html += cell('bs', '#FFFFFF', '#000000', sec.border, txt.w, txt.c2, sl);
+  html += cell('bs', sec.prsFill, '#000000', sec.border, txt.w, txt.c2, sl);
+  html += cell('bs', '#FFFFFF', GREY3, sec.disBorder, txt.w, txt.c2, sl);
+  html += cell('bs', '#FFFFFF', '#000000', sec.border, txt.w, txt.c2, '<span class="spn"></span>');
+  html += cell('bs', '#FFFFFF', '#000000', sec.border, txt.w, txt.c2, TICK + 'Added');
+  html += cell('bs', '#FFFFFF', '#000000', sec.border, txt.w, txt.c2, LOCK(20) + 'Checkout Securely');
+  html += cell('bs', '#FFFFFF', '#000000', sec.border, txt.w, txt.c2, LOCK(16) + 'Checkout Securely');
+
+  /* Tertiary: Neutral fill; Added keeps its own label per the sheet */
+  var ter = spec.tertiary;
+  html += cell('bs t3', ter.def, '#000000', null, 400, null, 'Tertiary CTA');
+  html += cell('bs t3', ter.prs, '#000000', null, 400, null, 'Tertiary CTA');
+  html += cell('bs t3', '#F2F2F2', GREY3, null, 400, null, 'Tertiary CTA');
+  html += cell('bs t3', ter.def, '#000000', null, 400, null, '<span class="spn"></span>');
+  html += cell('bs t3', ter.def, '#000000', null, 400, null, TICK + 'Tertiary CTA');
+  html += empty + empty;
+
+  /* Tertiary XS: Soft Black ink */
+  html += cell('bs xs', ter.def, SOFTBLACK, null, 400, null, 'XS CTA');
+  html += cell('bs xs', ter.prs, SOFTBLACK, null, 400, null, 'XS CTA');
+  html += cell('bs xs', '#F2F2F2', GREY3, null, 400, null, 'XS CTA');
+  html += cell('bs xs', ter.def, SOFTBLACK, null, 400, null, '<span class="spn"></span>');
+  html += empty + empty + empty;
+
+  /* Text Only: CTA colour, Primary Dark pressed, Dark 2 disabled */
+  var t = spec.text;
+  html += cell('bs txt', 'transparent', t.def, null, txt.tw, null, 'Text Only CTA');
+  html += cell('bs txt', 'transparent', t.prs, null, txt.tw, null, 'Text Only CTA');
+  html += cell('bs txt', 'transparent', t.dis, null, txt.tw, null, 'Text Only CTA');
+  html += empty + empty + empty + empty;
+
   grid.innerHTML = html;
   document.getElementById('btnBrand').textContent = PALETTES[brand].name;
 }
